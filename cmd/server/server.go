@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/roman-mazur/architecture-practice-4-template/httptools"
-	"github.com/roman-mazur/architecture-practice-4-template/signal"
+	"github.com/vladimirkoff/arch-lab-4/httptools"
+	"github.com/vladimirkoff/arch-lab-4/signal"
 )
 
 var port = flag.Int("port", 8080, "server port")
@@ -45,6 +45,36 @@ func main() {
 		rw.WriteHeader(http.StatusOK)
 		_ = json.NewEncoder(rw).Encode([]string{
 			"1", "2",
+		})
+	})
+
+	h.HandleFunc("/api/v1/some-data2", func(rw http.ResponseWriter, r *http.Request) {
+		respDelayString := os.Getenv(confResponseDelaySec)
+		if delaySec, parseErr := strconv.Atoi(respDelayString); parseErr == nil && delaySec > 0 && delaySec < 300 {
+			time.Sleep(time.Duration(delaySec) * time.Second)
+		}
+
+		report.Process(r)
+
+		rw.Header().Set("content-type", "application/json")
+		rw.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(rw).Encode([]string{
+			"2", "3",
+		})
+	})
+
+	h.HandleFunc("/api/v1/some-data3", func(rw http.ResponseWriter, r *http.Request) {
+		respDelayString := os.Getenv(confResponseDelaySec)
+		if delaySec, parseErr := strconv.Atoi(respDelayString); parseErr == nil && delaySec > 0 && delaySec < 300 {
+			time.Sleep(time.Duration(delaySec) * time.Second)
+		}
+
+		report.Process(r)
+
+		rw.Header().Set("content-type", "application/json")
+		rw.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(rw).Encode([]string{
+			"3", "4",
 		})
 	})
 
